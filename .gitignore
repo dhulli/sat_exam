@@ -1,0 +1,14 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Flask/instance
+instance/
+.env
+
+# SQLite (don’t commit DB file)
+app.db
+
+# VSCode
+.vscode/
