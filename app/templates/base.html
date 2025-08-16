@@ -9,8 +9,24 @@
 <nav>
   <a href="{{ url_for('index') }}">Home</a>
   <a href="{{ url_for('exam.take_exam') }}">Take Exam</a>
-  <a href="{{ url_for('auth.login') }}">Login</a>
+  {% if current_user.is_authenticated %}
+    <form method="post" action="{{ url_for('auth.logout') }}" style="display:inline">
+      <button type="submit">Logout</button>
+    </form>
+  {% else %}
+    <a href="{{ url_for('auth.login') }}">Login</a>
+    <a href="{{ url_for('auth.register') }}">Register</a>
+  {% endif %}
 </nav>
+
+{% with msgs = get_flashed_messages() %}
+  {% if msgs %}
+    <ul class="flash">
+      {% for m in msgs %}<li>{{ m }}</li>{% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
 <main>{% block content %}{% endblock %}</main>
 </body>
 </html>

@@ -1,2 +1,9 @@
 body { font-family: system-ui, Arial, sans-serif; margin: 24px; }
 nav a { margin-right: 12px; text-decoration: none; }
+.auth-form { max-width: 360px; display: grid; gap: 8px; margin-top: 12px; }
+.auth-form input { padding: 8px; }
+.auth-form button { padding: 8px 12px; }
+.flash { list-style: none; padding: 0; margin: 12px 0; }
+.flash li { background: #ffe9e9; border: 1px solid #ffb3b3; padding: 8px; margin-bottom: 6px; }
+nav { margin-bottom: 16px; }
+nav form button { background: none; border: none; color: blue; cursor: pointer; padding: 0; }
