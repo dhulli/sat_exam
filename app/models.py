@@ -30,6 +30,9 @@ class Exam(db.Model):
     title = db.Column(db.String(255), nullable=False, unique=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
+    # Optional per-exam curve: JSON mapping raw->scaled, e.g. {"0":200,"1":210,...}
+    curve_json = db.Column(db.Text)
+
     questions = db.relationship(
         "Question",
         back_populates="exam",
@@ -103,8 +106,13 @@ class Attempt(db.Model):
     started_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     completed_at = db.Column(db.DateTime)
 
-    # raw score (# correct). Keep it denormalized for fast display.
+    # Existing raw correct count
     raw = db.Column(db.Integer, nullable=False, default=0)
+
+    # NEW scoring fields
+    total = db.Column(db.Integer, nullable=False, default=0)  # total questions
+    percent = db.Column(db.Float)                              # 0..1
+    scaled = db.Column(db.Integer)                             # e.g., 200..800
 
     answers = db.relationship(
         "AttemptAnswer",
@@ -112,11 +120,7 @@ class Attempt(db.Model):
         cascade="all, delete-orphan",
         passive_deletes=True,
     )
-
-    # Optional: prevent duplicate active attempts if you want one-at-a-time per user/exam.
-    # __table_args__ = (db.UniqueConstraint("user_id", "exam_id", name="uq_attempt_user_exam"),)
-
-
+    
 # ---------- AttemptAnswers ----------
 class AttemptAnswer(db.Model):
     __tablename__ = "attempt_answer"

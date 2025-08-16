@@ -88,7 +88,16 @@ def upload_post():
         flash("No questions parsed.")
         return redirect(url_for("admin.upload_form"))
 
-    exam = Exam(title=title)
+    curve_json = (request.form.get("curve_json") or "").strip()
+    if curve_json:
+        try:
+            json.loads(curve_json)  # validate JSON
+        except Exception:
+            flash("Curve JSON is not valid JSON.")
+            return redirect(url_for("admin.upload_form"))
+
+    exam = Exam(title=title, curve_json=curve_json or None)
+
     db.session.add(exam); db.session.flush()
     for q in questions:
         q.exam_id = exam.id

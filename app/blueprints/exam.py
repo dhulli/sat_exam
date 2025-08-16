@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash, abort
 from flask_login import login_required, current_user
 from .. import db
@@ -12,17 +13,29 @@ def _get_owned_attempt_or_404(attempt_id: int) -> Attempt:
         abort(403)
     return attempt
 
+def _scaled_from_curve(exam: Exam, raw: int, total: int) -> int:
+    # Try exam-specific curve if provided (expects dict of raw->scaled)
+    try:
+        if exam.curve_json:
+            mapping = json.loads(exam.curve_json)
+            if isinstance(mapping, dict):
+                val = mapping.get(str(raw), mapping.get(raw))
+                if isinstance(val, (int, float)):
+                    return int(round(val))
+    except Exception:
+        pass
+    # Fallback: simple linear 200..800
+    return int(round(200 + 600 * (raw / total))) if total else 200
+
 @bp.get("/")
 @login_required
 def list_exams():
-    # List available exams
     exams = Exam.query.order_by(Exam.created_at.desc()).all()
     return render_template("exam_list.html", exams=exams)
 
 @bp.post("/start")
 @login_required
 def start():
-    # Create a new attempt for the chosen exam
     exam_id = request.form.get("exam_id", type=int)
     exam = Exam.query.get_or_404(exam_id)
     if not exam.questions:
@@ -36,20 +49,17 @@ def start():
 @bp.get("/take/<int:attempt_id>")
 @login_required
 def take_attempt(attempt_id: int):
-    # Render questions for this attempt
     attempt = _get_owned_attempt_or_404(attempt_id)
     exam = attempt.exam
-    questions = exam.questions  # ordered by relationship
+    questions = exam.questions
     return render_template("exam_take.html", attempt=attempt, exam=exam, questions=questions)
 
 @bp.post("/submit/<int:attempt_id>")
 @login_required
 def submit_attempt(attempt_id: int):
-    # Grade and store answers
     attempt = _get_owned_attempt_or_404(attempt_id)
     questions = attempt.exam.questions
 
-    # idempotent: clear existing answers if resubmitted
     AttemptAnswer.query.filter_by(attempt_id=attempt.id).delete()
 
     valid = {"A", "B", "C", "D"}
@@ -65,7 +75,11 @@ def submit_attempt(attempt_id: int):
                 selected=choice
             ))
 
+    total = len(questions)
     attempt.raw = raw
+    attempt.total = total
+    attempt.percent = (raw / total) if total else None
+    attempt.scaled = _scaled_from_curve(attempt.exam, raw, total)
     attempt.completed_at = datetime.utcnow()
     db.session.commit()
     return redirect(url_for("exam.result", attempt_id=attempt.id))
@@ -73,7 +87,6 @@ def submit_attempt(attempt_id: int):
 @bp.get("/result/<int:attempt_id>")
 @login_required
 def result(attempt_id: int):
-    # Show score + per-question feedback
     attempt = _get_owned_attempt_or_404(attempt_id)
     exam = attempt.exam
     answers = {

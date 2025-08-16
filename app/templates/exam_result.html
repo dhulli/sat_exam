@@ -2,7 +2,12 @@
 {% block title %}{{ exam.title }} · Results{% endblock %}
 {% block content %}
 <h1>{{ exam.title }} — Results</h1>
-<p><strong>Score:</strong> {{ attempt.raw }} / {{ total }}</p>
+<p><strong>Raw:</strong> {{ attempt.raw }} / {{ total }}</p>
+<p><strong>Percent:</strong>
+  {% if attempt.percent is not none %} {{ (attempt.percent * 100) | round(1) }}%
+  {% else %} — {% endif %}
+</p>
+<p><strong>Scaled score:</strong> {{ attempt.scaled if attempt.scaled is not none else '—' }}</p>
 
 <ol class="result-list">
   {% for q in questions %}

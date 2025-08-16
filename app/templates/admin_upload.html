@@ -7,6 +7,9 @@
   <input name="title" type="text" required>
   <label>File (.csv or .json)</label>
   <input name="file" type="file" accept=".csv,.json" required>
+  <label>Optional Curve JSON (raw → scaled)</label>
+  <textarea name="curve_json" rows="6" placeholder='{"0":200,"1":210,"2":220,...}'></textarea>
+  <small>Leave blank to use linear 200–800 scaling.</small>
   <button type="submit">Upload</button>
 </form>
 
