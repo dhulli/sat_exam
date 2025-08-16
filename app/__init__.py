@@ -21,8 +21,10 @@ def create_app():
 
     from .blueprints.auth import bp as auth_bp
     from .blueprints.exam import bp as exam_bp
+    from .blueprints.admin import bp as admin_bp    
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(exam_bp, url_prefix="/exam")
+    app.register_blueprint(admin_bp, url_prefix="/admin")
 
     @app.route("/")
     def index():

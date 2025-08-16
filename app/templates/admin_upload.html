@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Admin · Upload Exam{% endblock %}
+{% block content %}
+<h1>Admin: Upload Exam</h1>
+<form method="post" action="{{ url_for('admin.upload_post') }}" enctype="multipart/form-data" class="auth-form">
+  <label>Exam title</label>
+  <input name="title" type="text" required>
+  <label>File (.csv or .json)</label>
+  <input name="file" type="file" accept=".csv,.json" required>
+  <button type="submit">Upload</button>
+</form>
+
+<h3>CSV format</h3>
+<pre>order_index,text,choice_a,choice_b,choice_c,choice_d,correct
+1,What is 2+2?,1,2,3,4,D
+2,Select a vowel.,B,C,A,D,C
+</pre>
+
+<h3>JSON format</h3>
+<pre>{
+  "title": "SAT Demo",
+  "questions": [
+    {
+      "order_index": 1,
+      "text": "What is 2+2?",
+      "choice_a": "1", "choice_b": "2", "choice_c": "3", "choice_d": "4",
+      "correct": "D"
+    }
+  ]
+}</pre>
+{% endblock %}
