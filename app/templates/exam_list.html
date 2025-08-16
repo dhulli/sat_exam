@@ -1,24 +1,24 @@
 {% extends "base.html" %}
 {% block title %}Exams · SAT MVP{% endblock %}
 {% block content %}
-<h1>Available Exams</h1>
+<h1 class="h4 mb-3">Available Exams</h1>
 
 {% if exams %}
-  <ul class="exam-list">
+  <ul class="list-group">
     {% for e in exams %}
-      <li class="exam-item">
+      <li class="list-group-item d-flex justify-content-between align-items-center">
         <div>
           <strong>{{ e.title }}</strong>
-          <span> · {{ e.questions|length }} questions</span>
+          <span class="text-secondary"> · {{ e.questions|length }} questions</span>
         </div>
-        <form method="post" action="{{ url_for('exam.start') }}">
+        <form method="post" action="{{ url_for('exam.start') }}" class="m-0">
           <input type="hidden" name="exam_id" value="{{ e.id }}">
-          <button type="submit">Start</button>
+          <button class="btn btn-primary btn-sm" type="submit">Start</button>
         </form>
       </li>
     {% endfor %}
   </ul>
 {% else %}
-  <p>No exams yet. Ask an admin to upload one.</p>
+  <div class="alert alert-info">No exams yet. Ask an admin to upload one.</div>
 {% endif %}
 {% endblock %}

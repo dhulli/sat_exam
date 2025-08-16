@@ -19,3 +19,10 @@ nav form button { background: none; border: none; color: blue; cursor: pointer; 
 .result-item.correct { background: #ecffec; border-color: #b7e3b7; }
 .result-item.incorrect { background: #fff0f0; border-color: #f2bdbd; }
 .qtext { margin-bottom: 6px; font-weight: 600; }
+
+/* Minimal tweaks layered on Bootstrap */
+body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+.navbar .btn { padding: .25rem .6rem; }
+pre { background: var(--bs-tertiary-bg); padding: .75rem; border-radius: .5rem; }
+.card + .card { margin-top: .5rem; } /* compact stacked cards */
+

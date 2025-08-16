@@ -1,26 +1,46 @@
 {% extends "base.html" %}
 {% block title %}Admin · Upload Exam{% endblock %}
 {% block content %}
-<h1>Admin: Upload Exam</h1>
-<form method="post" action="{{ url_for('admin.upload_post') }}" enctype="multipart/form-data" class="auth-form">
-  <label>Exam title</label>
-  <input name="title" type="text" required>
-  <label>File (.csv or .json)</label>
-  <input name="file" type="file" accept=".csv,.json" required>
-  <label>Optional Curve JSON (raw → scaled)</label>
-  <textarea name="curve_json" rows="6" placeholder='{"0":200,"1":210,"2":220,...}'></textarea>
-  <small>Leave blank to use linear 200–800 scaling.</small>
-  <button type="submit">Upload</button>
-</form>
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h1 class="h4 mb-3">Upload Exam</h1>
+        <form method="post" action="{{ url_for('admin.upload_post') }}" enctype="multipart/form-data" class="vstack gap-3">
+          <div>
+            <label class="form-label">Exam title</label>
+            <input name="title" type="text" required class="form-control">
+          </div>
+          <div>
+            <label class="form-label">File (.csv or .json)</label>
+            <input name="file" type="file" accept=".csv,.json" required class="form-control">
+          </div>
+          <!-- If you added curve_json in S1-6, keep this block; otherwise you can omit it -->
+          <div>
+            <label class="form-label">Optional Curve JSON (raw → scaled)</label>
+            <textarea name="curve_json" rows="5" class="form-control" placeholder='{"0":200,"1":210,"2":220,...}'></textarea>
+            <div class="form-text">Leave blank to use linear 200–800 scaling.</div>
+          </div>
+          <div class="d-flex justify-content-end">
+            <button class="btn btn-primary" type="submit">Upload</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
-<h3>CSV format</h3>
-<pre>order_index,text,choice_a,choice_b,choice_c,choice_d,correct
+    <div class="mt-4">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="h6">CSV format</h2>
+<pre class="mb-0">order_index,text,choice_a,choice_b,choice_c,choice_d,correct
 1,What is 2+2?,1,2,3,4,D
-2,Select a vowel.,B,C,A,D,C
-</pre>
-
-<h3>JSON format</h3>
-<pre>{
+2,Select a vowel.,B,C,A,D,C</pre>
+        </div>
+      </div>
+      <div class="card mt-3">
+        <div class="card-body">
+          <h2 class="h6">JSON format</h2>
+<pre class="mb-0">{
   "title": "SAT Demo",
   "questions": [
     {
@@ -31,4 +51,9 @@
     }
   ]
 }</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

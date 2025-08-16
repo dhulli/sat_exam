@@ -100,3 +100,25 @@ def result(attempt_id: int):
         attempt=attempt, exam=exam,
         questions=questions, answers=answers, total=total
     )
+
+@bp.get("/history")
+@login_required
+def history():
+    attempts = (
+        Attempt.query
+        .filter_by(user_id=current_user.id)
+        .order_by(Attempt.started_at.desc())
+        .all()
+    )
+    return render_template("exam_history.html", attempts=attempts)
+
+@bp.post("/delete/<int:attempt_id>")
+@login_required
+def delete_attempt(attempt_id: int):
+    attempt = Attempt.query.get_or_404(attempt_id)
+    if attempt.user_id != current_user.id:
+        abort(403)
+    db.session.delete(attempt)  # AttemptAnswer rows will cascade-delete
+    db.session.commit()
+    flash("Attempt deleted.", "success")
+    return redirect(url_for("exam.history"))

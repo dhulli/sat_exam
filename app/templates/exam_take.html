@@ -1,18 +1,39 @@
 {% extends "base.html" %}
 {% block title %}{{ exam.title }} · Take Exam{% endblock %}
 {% block content %}
-<h1>{{ exam.title }}</h1>
-<form method="post" action="{{ url_for('exam.submit_attempt', attempt_id=attempt.id) }}" class="exam-form">
-  {% for q in questions %}
-    <fieldset class="question-card">
-      <legend>Q{{ q.order_index }}. {{ q.text }}</legend>
+<h1 class="h4 mb-3">{{ exam.title }}</h1>
 
-      <label><input type="radio" name="q_{{ q.id }}" value="A"> A) {{ q.choice_a }}</label>
-      <label><input type="radio" name="q_{{ q.id }}" value="B"> B) {{ q.choice_b }}</label>
-      <label><input type="radio" name="q_{{ q.id }}" value="C"> C) {{ q.choice_c }}</label>
-      <label><input type="radio" name="q_{{ q.id }}" value="D"> D) {{ q.choice_d }}</label>
-    </fieldset>
+<form method="post" action="{{ url_for('exam.submit_attempt', attempt_id=attempt.id) }}" class="vstack gap-3">
+  {% for q in questions %}
+    {% set sel = (answers.get(q.id) if answers is defined else None) %}
+    <div class="card">
+      <div class="card-body">
+        <div class="fw-semibold mb-2">Q{{ q.order_index }}. {{ q.text }}</div>
+
+        <div class="vstack gap-1">
+          <label class="form-check">
+            <input class="form-check-input" type="radio" name="q_{{ q.id }}" value="A" {% if sel == 'A' %}checked{% endif %}>
+            <span class="form-check-label">A) {{ q.choice_a }}</span>
+          </label>
+          <label class="form-check">
+            <input class="form-check-input" type="radio" name="q_{{ q.id }}" value="B" {% if sel == 'B' %}checked{% endif %}>
+            <span class="form-check-label">B) {{ q.choice_b }}</span>
+          </label>
+          <label class="form-check">
+            <input class="form-check-input" type="radio" name="q_{{ q.id }}" value="C" {% if sel == 'C' %}checked{% endif %}>
+            <span class="form-check-label">C) {{ q.choice_c }}</span>
+          </label>
+          <label class="form-check">
+            <input class="form-check-input" type="radio" name="q_{{ q.id }}" value="D" {% if sel == 'D' %}checked{% endif %}>
+            <span class="form-check-label">D) {{ q.choice_d }}</span>
+          </label>
+        </div>
+      </div>
+    </div>
   {% endfor %}
-  <button type="submit">Submit</button>
+
+  <div class="d-flex justify-content-end">
+    <button class="btn btn-success" type="submit">Submit</button>
+  </div>
 </form>
 {% endblock %}

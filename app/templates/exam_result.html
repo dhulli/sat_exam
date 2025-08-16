@@ -1,24 +1,41 @@
 {% extends "base.html" %}
 {% block title %}{{ exam.title }} · Results{% endblock %}
 {% block content %}
-<h1>{{ exam.title }} — Results</h1>
-<p><strong>Raw:</strong> {{ attempt.raw }} / {{ total }}</p>
-<p><strong>Percent:</strong>
-  {% if attempt.percent is not none %} {{ (attempt.percent * 100) | round(1) }}%
-  {% else %} — {% endif %}
-</p>
-<p><strong>Scaled score:</strong> {{ attempt.scaled if attempt.scaled is not none else '—' }}</p>
+<div class="row">
+  <div class="col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h1 class="h4 mb-3">{{ exam.title }} — Results</h1>
+        <p class="mb-1"><strong>Raw:</strong> {{ attempt.raw }} / {{ total }}</p>
+        <p class="mb-1"><strong>Percent:</strong>
+          {% if attempt.percent is not none %} {{ (attempt.percent * 100) | round(1) }}%
+          {% else %} — {% endif %}
+        </p>
+        <p class="mb-0"><strong>Scaled score:</strong> {{ attempt.scaled if attempt.scaled is not none else '—' }}</p>
+      </div>
+    </div>
+  </div>
+</div>
 
-<ol class="result-list">
+<h2 class="h5 mt-4">Review</h2>
+<ol class="list-group list-group-numbered">
   {% for q in questions %}
     {% set sel = answers.get(q.id) %}
     {% set ok = (sel == q.correct) %}
-    <li class="result-item {{ 'correct' if ok else 'incorrect' }}">
-      <div class="qtext">Q{{ q.order_index }}. {{ q.text }}</div>
-      <div>Your answer: {{ sel if sel else '—' }}</div>
-      <div>Correct answer: {{ q.correct }}</div>
+    <li class="list-group-item">
+      <div class="d-flex justify-content-between align-items-start">
+        <div class="me-3">
+          <div class="fw-semibold mb-1">Q{{ q.order_index }}. {{ q.text }}</div>
+          <div class="small text-secondary">Your answer: {{ sel if sel else '—' }}</div>
+          <div class="small">Correct answer: <span class="fw-semibold">{{ q.correct }}</span></div>
+        </div>
+        <span class="badge rounded-pill {{ 'bg-success' if ok else 'bg-danger' }}">
+          {{ 'Correct' if ok else 'Incorrect' }}
+        </span>
+      </div>
     </li>
   {% endfor %}
 </ol>
-<a href="{{ url_for('exam.list_exams') }}">Back to exams</a>
+
+<a class="btn btn-outline-secondary mt-3" href="{{ url_for('exam.list_exams') }}">Back to exams</a>
 {% endblock %}

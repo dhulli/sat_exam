@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}My attempts · SAT MVP{% endblock %}
+{% block content %}
+<h1 class="h4 mb-3">My attempts</h1>
+
+{% if attempts %}
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Exam</th>
+          <th class="text-center">Raw</th>
+          <th class="text-center">Percent</th>
+          <th class="text-center">Scaled</th>
+          <th class="text-center">Status</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in attempts %}
+          {% set done = (a.completed_at is not none) %}
+          <tr>
+            <td>{{ a.started_at.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td>{{ a.exam.title }}</td>
+            <td class="text-center">{{ a.raw }}/{{ a.total or (a.exam.questions|length) }}</td>
+            <td class="text-center">
+              {% if a.percent is not none %}{{ (a.percent * 100) | round(1) }}%{% else %}—{% endif %}
+            </td>
+            <td class="text-center">{{ a.scaled if a.scaled is not none else '—' }}</td>
+            <td class="text-center">
+              <span class="badge {{ 'bg-success' if done else 'bg-secondary' }}">
+                {{ 'Completed' if done else 'In progress' }}
+              </span>
+            </td>
+            <td class="text-end">
+              {% if done %}
+                <a class="btn btn-sm btn-outline-primary" href="{{ url_for('exam.result', attempt_id=a.id) }}">View</a>
+              {% else %}
+                <a class="btn btn-sm btn-warning" href="{{ url_for('exam.take_attempt', attempt_id=a.id) }}">Continue</a>
+              {% endif %}
+              <form method="post" action="{{ url_for('exam.start') }}" class="d-inline">
+                <input type="hidden" name="exam_id" value="{{ a.exam_id }}">
+                <button class="btn btn-sm btn-outline-secondary" type="submit">Retake</button>
+              </form>
+              <form method="post"
+                action="{{ url_for('exam.delete_attempt', attempt_id=a.id) }}"
+                class="d-inline"
+                onsubmit="return confirm('Delete this attempt? This cannot be undone.');">
+                <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="alert alert-info">You have no attempts yet. Start an exam to see it here.</div>
+{% endif %}
+{% endblock %}

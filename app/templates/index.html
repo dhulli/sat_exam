@@ -1,6 +1,22 @@
 {% extends "base.html" %}
 {% block title %}Home · SAT MVP{% endblock %}
 {% block content %}
-<h1>Welcome</h1>
-<p>Minimal skeleton is running.</p>
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h1 class="h4 mb-2">Welcome</h1>
+        <p class="text-secondary mb-3">
+          Take a practice exam and see your score instantly. Start with the list of available exams.
+        </p>
+        <div class="d-flex gap-2">
+          <a class="btn btn-primary" href="{{ url_for('exam.list_exams') }}">Browse exams</a>
+          {% if current_user.is_authenticated and current_user.is_admin %}
+            <a class="btn btn-outline-secondary" href="{{ url_for('admin.upload_form') }}">Upload an exam</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
