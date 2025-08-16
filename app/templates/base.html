@@ -8,7 +8,10 @@
 <body>
 <nav>
   <a href="{{ url_for('index') }}">Home</a>
-  <a href="{{ url_for('exam.take_exam') }}">Take Exam</a>
+  <a href="{{ url_for('exam.list_exams') }}">Take Exam</a>
+  {% if current_user.is_authenticated and current_user.is_admin %}
+    <a href="{{ url_for('admin.upload_form') }}">Admin</a>
+  {% endif %}
   {% if current_user.is_authenticated %}
     <form method="post" action="{{ url_for('auth.logout') }}" style="display:inline">
       <button type="submit">Logout</button>

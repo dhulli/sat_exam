@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ exam.title }} · Results{% endblock %}
+{% block content %}
+<h1>{{ exam.title }} — Results</h1>
+<p><strong>Score:</strong> {{ attempt.raw }} / {{ total }}</p>
+
+<ol class="result-list">
+  {% for q in questions %}
+    {% set sel = answers.get(q.id) %}
+    {% set ok = (sel == q.correct) %}
+    <li class="result-item {{ 'correct' if ok else 'incorrect' }}">
+      <div class="qtext">Q{{ q.order_index }}. {{ q.text }}</div>
+      <div>Your answer: {{ sel if sel else '—' }}</div>
+      <div>Correct answer: {{ q.correct }}</div>
+    </li>
+  {% endfor %}
+</ol>
+<a href="{{ url_for('exam.list_exams') }}">Back to exams</a>
+{% endblock %}

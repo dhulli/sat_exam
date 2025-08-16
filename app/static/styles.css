@@ -7,3 +7,15 @@ nav a { margin-right: 12px; text-decoration: none; }
 .flash li { background: #ffe9e9; border: 1px solid #ffb3b3; padding: 8px; margin-bottom: 6px; }
 nav { margin-bottom: 16px; }
 nav form button { background: none; border: none; color: blue; cursor: pointer; padding: 0; }
+.exam-list { padding: 0; list-style: none; }
+.exam-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; }
+
+.exam-form { display: grid; gap: 12px; }
+.question-card { border: 1px solid #ddd; border-radius: 8px; padding: 12px; }
+.question-card label { display: block; margin: 6px 0; }
+
+.result-list { padding-left: 18px; }
+.result-item { margin-bottom: 10px; padding: 8px; border: 1px solid #eee; border-radius: 8px; }
+.result-item.correct { background: #ecffec; border-color: #b7e3b7; }
+.result-item.incorrect { background: #fff0f0; border-color: #f2bdbd; }
+.qtext { margin-bottom: 6px; font-weight: 600; }
